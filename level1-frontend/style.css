@@ -1,0 +1,90 @@
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f1f5f9;
+    color: #1e293b;
+    margin: 0;
+    padding: 30px 15px;
+}
+
+h1 {
+    text-align: center;
+    color: #2563eb;
+    margin-bottom: 10px;
+}
+
+body > p {
+    text-align: center;
+    color: #64748b;
+    margin-bottom: 35px;
+}
+
+h2 {
+    color: #334155;
+    margin-top: 25px;
+}
+
+form, #studentList {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+button {
+    background: #2563eb;
+    color: white;
+    padding: 11px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin: 5px 5px 5px 0;
+}
+
+button:hover {
+    background: #1d4ed8;
+}
+
+#studentList > div {
+    padding: 12px 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+#studentList p {
+    overflow-wrap: anywhere;
+    line-height: 1.6;
+}
+
+#loadStudents {
+    margin-bottom: 15px;
+}
+
+@media (min-width: 700px) {
+    body {
+        max-width: 850px;
+        margin: auto;
+    }
+
+    form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    form button {
+        grid-column: 1 / -1;
+    }
+}
