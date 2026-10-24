@@ -1,16 +1,19 @@
 
 const express = require("express");
+const authRoutes = require("./auth");
 const cors = require("cors");
 const pool = require("./db");
+const { authenticateToken, authorizeRole } = require("./middleware");
 
 const app = express();
 const PORT = 3000;
 
 app.use(cors());
 app.use(express.json());
+app.use("/api/auth", authRoutes);
 
-// GET - Get all students
-app.get("/api/students", async (req, res) => {
+// GET - Get all students (Login required)
+app.get("/api/students", authenticateToken, async (req, res) => {
     try {
         const [students] = await pool.query(
             "SELECT * FROM students ORDER BY id ASC"
@@ -22,8 +25,8 @@ app.get("/api/students", async (req, res) => {
     }
 });
 
-// GET - Get one student
-app.get("/api/students/:id", async (req, res) => {
+// GET - Get one student (Login required)
+app.get("/api/students/:id", authenticateToken, async (req, res) => {
     try {
         const [rows] = await pool.execute(
             "SELECT * FROM students WHERE id = ?",
@@ -41,8 +44,8 @@ app.get("/api/students/:id", async (req, res) => {
     }
 });
 
-// POST - Add a student
-app.post("/api/students", async (req, res) => {
+// POST - Add a student (Login required)
+app.post("/api/students", authenticateToken, async (req, res) => {
     const { name, age, course } = req.body;
 
     if (
@@ -76,8 +79,8 @@ app.post("/api/students", async (req, res) => {
     }
 });
 
-// PUT - Update a student
-app.put("/api/students/:id", async (req, res) => {
+// PUT - Update a student (Login required)
+app.put("/api/students/:id", authenticateToken, async (req, res) => {
     const { name, age, course } = req.body;
 
     if (
@@ -115,8 +118,8 @@ app.put("/api/students/:id", async (req, res) => {
     }
 });
 
-// DELETE - Delete a student
-app.delete("/api/students/:id", async (req, res) => {
+// DELETE - Delete a student (Login required)
+app.delete("/api/students/:id", authenticateToken, async (req, res) => {
     try {
         const [rows] = await pool.execute(
             "SELECT * FROM students WHERE id = ?",
@@ -141,6 +144,24 @@ app.delete("/api/students/:id", async (req, res) => {
         res.status(500).json({ message: "Failed to delete student" });
     }
 });
+
+// Protected profile: login required
+app.get("/api/profile", authenticateToken, (req, res) => {
+    res.json({
+        message: "Profile accessed successfully",
+        user: req.user
+    });
+});
+
+// Admin-only route
+app.get(
+    "/api/admin",
+    authenticateToken,
+    authorizeRole("admin"),
+    (req, res) => {
+        res.json({ message: "Welcome, Admin!" });
+    }
+);
 
 // Start server
 app.listen(PORT, () => {
